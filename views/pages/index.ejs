@@ -18,18 +18,19 @@
                     <td>
                         <div id="invoice-from-to">
                             <div>
-                                <h3>Simon Loir</h3>
-                                <span>Rue de la Forêt, 11</span><br />
-                                <span>6970 Tenneville</span><br />
-                                <span>+32 485 45 26 980</span><br />
-                                <span>simon@simonloir.be</span><br />
-                                <span>www.simonloir.be</span>
+                                <h3><%= e_name %></h3>
+                                <span><%- e_addr %></span> <br />
+                                <span><%= e_phone_number %></span><br />
+                                <span><%= e_email %></span><br />
+                                <span><%= e_website %></span>
                             </div>
                             <div>
-                                <h3>Simon Loir</h3>
-                                <span>Rue de la Forêt, 11</span><br />
-                                <span>6970 Tenneville</span><br />
-                                <p>TVA : BE0732788874</p>
+                                <h3><%= c_name %></h3>
+                                <% if(c_name != c_enterprise_name) { %>
+                                <span><%= c_enterprise_name %></span><br />
+                                <% } %>
+                                <span><%- c_addr %></span><br />
+                                <p>TVA : <%= c_vat_number %></p>
                             </div>
                         </div>
 
@@ -45,68 +46,54 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <% let intra = false; %> <%
+                                data.forEach((element, i) => { %>
                                 <tr>
-                                    <td>1</td>
+                                    <td><%= i + 1 %></td>
+                                    <td><%- element[0] %></td>
+                                    <td><%- element[1] %></td>
+                                    <td><%- element[2] %>€</td>
+                                    <% if(element[4]) { %> <% intra = true %>
+                                    <td>*</td>
+                                    <% } else { %>
+                                    <td><%- element[3] %>%</td>
+                                    <% } %>
                                     <td>
-                                        Lorem ipsum dolor sit amet consectetur
-                                        adipisicing elit. Possimus cupiditate
-                                        inventore voluptas repellat temporibus
-                                        suscipit laboriosam facilis deserunt
-                                        corporis ex ullam in eligendi aspernatur
-                                        magni, repellendus veritatis
-                                        voluptatibus ad at.
+                                        <%- element[1] * (element[2] +
+                                        (element[4] ? 0 : element[3] *
+                                        element[2] / 100)) %>€
                                     </td>
-                                    <td>1</td>
-                                    <td>100€</td>
-                                    <td>21%</td>
-                                    <td>121€</td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>
-                                        Lorem ipsum dolor sit amet consectetur
-                                        adipisicing elit. Possimus cupiditate
-                                        inventore voluptas repellat temporibus
-                                        suscipit laboriosam facilis deserunt
-                                        corporis ex ullam in eligendi aspernatur
-                                        magni, repellendus veritatis
-                                        voluptatibus ad at.
-                                    </td>
-                                    <td>1</td>
-                                    <td>100€</td>
-                                    <td>21%</td>
-                                    <td>121€</td>
-                                </tr>
-
-                                <tr>
-                                    <td>3</td>
-                                    <td>
-                                        Lorem ipsum dolor sit amet consectetur
-                                        adipisicing elit. Possimus cupiditate
-                                        inventore voluptas repellat temporibus
-                                        suscipit laboriosam facilis deserunt
-                                        corporis ex ullam in eligendi aspernatur
-                                        magni, repellendus veritatis
-                                        voluptatibus ad at.
-                                    </td>
-                                    <td>1</td>
-                                    <td>100€</td>
-                                    <td>21%</td>
-                                    <td>121€</td>
-                                </tr>
+                                <% }) %>
                                 <tr>
                                     <td colspan="4" class="hidden"></td>
                                     <td><b>Total HT</b></td>
-                                    <td>300€</td>
+                                    <td>
+                                        <%= data.map(function (e) { return e[1]
+                                        * e[2]}).reduce((accumulator,
+                                        currentValue) => accumulator +
+                                        currentValue) %>€
+                                    </td>
                                 </tr>
 
                                 <tr>
                                     <td colspan="4" class="hidden"></td>
                                     <td><b>Total TTC</b></td>
-                                    <td>363€</td>
+                                    <td>
+                                        <%= data.map(function (e) { return e[1]
+                                        * (e[2] + (e[4] ? 0 : e[3] * e[2] /
+                                        100)); }).reduce((accumulator,
+                                        currentValue) => accumulator +
+                                        currentValue) %>€
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+
+                        <p>
+                            <% if(intra){ %> * Non applicable car
+                            intra-communautaire <% } %>
+                        </p>
                     </td>
                 </tr>
             </tbody>
@@ -132,10 +119,9 @@
         </header>
         <footer>
             <div>
-                <h3>Simon Loir</h3>
-                <span>Rue de la Forêt, 11</span><br />
-                <span>6970 Tenneville</span><br />
-                <span>TVA : BE0732788874</span>
+                <h3><%= e_name %></h3>
+                <%- e_addr %><br />
+                <span>TVA : <%= e_vat %></span>
             </div>
 
             <div>
