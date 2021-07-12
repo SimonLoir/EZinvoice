@@ -42,6 +42,8 @@ async function run() {
             printBackground: true,
         });
 
+        await page.close();
+
         res.end('done');
     });
 
