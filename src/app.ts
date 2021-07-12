@@ -1,4 +1,6 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import auth from './auth';
 const puppeteer = require('puppeteer');
 const app = express();
 const port = 8080;
@@ -19,20 +21,28 @@ async function run() {
 
     app.set('view engine', 'ejs');
 
+    // parse application/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({ extended: false }));
+
+    // parse application/json
+    app.use(bodyParser.json());
+
     app.get('/', function (req, res) {
-        let { lang } = req.query;
+        let { lang, title } = req.query;
 
         // Only allow a few languages
         if (['fr'].indexOf(<string>lang) < 0)
-            return res.end('Invalid language used in the query');
+            return res.status(500).end('Invalid language used in the query');
 
-        res.render('pages/index', { lang });
+        res.render('pages/index', { lang, title });
     });
 
-    app.get('/build', async function (req, res) {
+    app.post('/build', async function (req, res) {
+        if (!req.body.token || !auth.check(req.body.token).valid)
+            return res.status(500).end('Invalid access token');
         const page = await browser.newPage();
-
-        await page.goto(`http://localhost:${port}/?${serialize(req.query)}`, {
+        const data = { ...req.query, ...req.body };
+        await page.goto(`http://localhost:${port}/?${serialize(data)}`, {
             waitUntil: 'networkidle2',
         });
 
@@ -45,6 +55,11 @@ async function run() {
         await page.close();
 
         res.end('done');
+    });
+
+    app.get('/exchange', async function (req, res) {
+        if (!req.query.password) return res.status(500).end('Invalid password');
+        res.json(auth.createJWT([true], 365 * 24 * 60 * 60));
     });
 
     app.listen(port);
