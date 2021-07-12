@@ -52,39 +52,39 @@
                                     <td><%= i + 1 %></td>
                                     <td><%- element[0] %></td>
                                     <td><%- element[1] %></td>
-                                    <td><%- element[2] %>€</td>
+                                    <td><%- element[2].toFixed(2) %>€</td>
                                     <% if(element[4]) { %> <% intra = true %>
                                     <td>*</td>
                                     <% } else { %>
                                     <td><%- element[3] %>%</td>
                                     <% } %>
-                                    <td>
-                                        <%- element[1] * (element[2] +
+                                    <td style="text-align: right">
+                                        <%- (element[1] * (element[2] +
                                         (element[4] ? 0 : element[3] *
-                                        element[2] / 100)) %>€
+                                        element[2] / 100))).toFixed(2) %>€
                                     </td>
                                 </tr>
                                 <% }) %>
                                 <tr>
                                     <td colspan="4" class="hidden"></td>
                                     <td><b>Total HT</b></td>
-                                    <td>
+                                    <td style="text-align: right">
                                         <%= data.map(function (e) { return e[1]
                                         * e[2]}).reduce((accumulator,
                                         currentValue) => accumulator +
-                                        currentValue) %>€
+                                        currentValue).toFixed(2) %>€
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td colspan="4" class="hidden"></td>
                                     <td><b>Total TTC</b></td>
-                                    <td>
+                                    <td style="text-align: right">
                                         <%= data.map(function (e) { return e[1]
                                         * (e[2] + (e[4] ? 0 : e[3] * e[2] /
                                         100)); }).reduce((accumulator,
                                         currentValue) => accumulator +
-                                        currentValue) %>€
+                                        currentValue).toFixed(2) %>€
                                     </td>
                                 </tr>
                             </tbody>
