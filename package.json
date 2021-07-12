@@ -1,0 +1,33 @@
+{
+    "name": "ezinvoice",
+    "version": "1.0.0",
+    "description": "An invoices builder for ez-biz",
+    "main": "lib/index.js",
+    "directories": {
+        "lib": "lib"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "tsc && node dist/app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SimonLoir/EZinvoice.git"
+    },
+    "author": "Simon Loir",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/SimonLoir/EZinvoice/issues"
+    },
+    "homepage": "https://github.com/SimonLoir/EZinvoice#readme",
+    "dependencies": {
+        "ejs": "^3.1.6",
+        "express": "^4.17.1",
+        "puppeteer": "^10.1.0"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.13",
+        "tslint": "^5.20.1",
+        "typescript": "^3.9.10"
+    }
+}
