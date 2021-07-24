@@ -117,7 +117,7 @@ async function run() {
         await page.close();
 
         // Sends the download url back to the user
-        res.json({ done: true, url: 'http://localhost:8080/' + out });
+        res.json({ done: true, url: `http://localhost:${port}/` + out });
     });
 
     app.get('/exchange', async function (req, res) {
