@@ -57,11 +57,21 @@ async function run() {
             c_addr,
             c_vat_number,
             data,
+            due_percentage = '0',
+            duration,
         } = req.query;
 
         // Only allow a few languages
         if (['fr'].indexOf(<string>lang) < 0)
             return res.status(500).end('Invalid language used in the query');
+
+        let str_id = i_nbr.toString();
+        let str_id_len = str_id.length;
+        let zeros = '0'.repeat(10 - str_id_len);
+        let body = str_id + zeros;
+        let end = (parseInt(body) % 97).toString();
+        let struct_com =
+            body + (end == '0' ? '97' : end.length == 1 ? '0' + end : end);
 
         res.render('pages/index', {
             lang,
@@ -80,7 +90,10 @@ async function run() {
             c_enterprise_name,
             c_addr,
             c_vat_number,
+            due_percentage: parseFloat(<string>due_percentage),
             data: JSON.parse(<string>data),
+            duration,
+            struct_com,
         });
     });
 

@@ -25,9 +25,9 @@
                                 <span><%= e_website %></span>
                             </div>
                             <div>
-                                <h3><%= c_name %></h3>
+                                <h3><%= c_enterprise_name %></h3>
                                 <% if(c_name != c_enterprise_name) { %>
-                                <span><%= c_enterprise_name %></span><br />
+                                <span><%= c_name %></span><br />
                                 <% } %>
                                 <span><%- c_addr %></span><br />
                                 <p>TVA : <%= c_vat_number %></p>
@@ -90,10 +90,49 @@
                             </tbody>
                         </table>
 
-                        <p>
-                            <% if(intra){ %> * Non applicable car
-                            intra-communautaire <% } %>
-                        </p>
+                        <% if(intra){ %>
+
+                        <p>* Non applicable car intra-communautaire</p>
+
+                        <% } %> <% if(due_percentage > 0){ %>
+
+                        <p><table>
+                            <tr>
+                                <td><b>Conditions de payement</b></td>
+                                <td><b>:</b></td>
+                                <td>
+                                    <%- duration  %> jours
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><b>À payer</b></td>
+                                <td><b>:</b></td>
+                                <td>
+                                    <%= (data.map(function (e) { return e[1]
+                                        * (e[2] + (e[4] ? 0 : e[3] * e[2] /
+                                        100)); }).reduce((accumulator,
+                                        currentValue) => accumulator +
+                                        currentValue) * due_percentage / 100).toFixed(2) %>€
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><b>Communication structurée</b></td>
+                                <td><b>:</b></td>
+                                <td>
+                                    <%= `+++ ${struct_com.slice(
+                                        0,
+                                        3
+                                    )} / ${struct_com.slice(
+                                        3,
+                                        7
+                                    )} / ${struct_com.slice(7)} +++` %>
+                                </td>
+                            </tr>
+                        </table></p>
+
+                        <% } %>
                     </td>
                 </tr>
             </tbody>
