@@ -59,6 +59,7 @@ async function run() {
             data,
             due_percentage = '0',
             duration,
+            struct = '',
         } = req.query;
 
         // Only allow a few languages
@@ -71,7 +72,9 @@ async function run() {
         let body = str_id + zeros;
         let end = (parseInt(body) % 97).toString();
         let struct_com =
-            body + (end == '0' ? '97' : end.length == 1 ? '0' + end : end);
+            struct == ''
+                ? body + (end == '0' ? '97' : end.length == 1 ? '0' + end : end)
+                : struct;
 
         res.render('pages/index', {
             lang,
