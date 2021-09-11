@@ -1,7 +1,11 @@
 import express from 'express';
 import fs from 'fs';
+import os from 'os';
 import bodyParser from 'body-parser';
 import auth from './auth';
+import aws from 'aws-sdk';
+import { v4 } from 'uuid';
+require('dotenv').config();
 const puppeteer = require('puppeteer');
 const app = express();
 const port = 8080;
@@ -22,6 +26,18 @@ const serialize = function (obj: any) {
  * Async function wrapper in order to use await in top level
  */
 async function run() {
+    const tmp = os.tmpdir() + '/ezinvoices.simonloir.be/';
+
+    if (!fs.existsSync(tmp)) fs.mkdirSync(tmp);
+
+    const endpoint = new aws.Endpoint(process.env.SPACE_URL);
+
+    const s3 = new aws.S3({
+        endpoint,
+        accessKeyId: process.env.SPACE_UID,
+        secretAccessKey: process.env.SPACE_KEY,
+    });
+
     // Creates the output folder
     if (!fs.existsSync('out')) fs.mkdirSync('out');
 
@@ -112,7 +128,7 @@ async function run() {
         data.data = JSON.stringify(JSON.parse(req.body.data));
         console.log(data.data);
         const url = `http://localhost:${port}/?${serialize(data)}`;
-        const out = `out/${req.body.i_nbr}-${new Date().getTime()}-${
+        const out = `${req.body.i_nbr}-${new Date().getTime()}-${
             req.body.token.split('.')[2]
         }.pdf`;
         console.log(url);
@@ -124,16 +140,39 @@ async function run() {
 
         // Converts the HTML to PDF
         await page.pdf({
-            path: './' + out,
+            path: tmp + out,
             preferCSSPageSize: true,
             printBackground: true,
         });
 
+        const jwt_data = {
+            a: req.body.i_nbr,
+            d: new Date().toISOString(),
+            u: v4(),
+        };
+
+        s3.upload(
+            {
+                Bucket: 'ezbiz',
+                Key: `${req.body.e_vat}/${req.body.i_nbr}/${
+                    auth.createJWT(jwt_data).token
+                }/${req.body.i_nbr}.pdf`,
+                Body: fs.readFileSync(tmp + out),
+                ACL: 'public-read',
+            },
+            async (err, data) => {
+                if (err) return res.json({ err });
+
+                // Sends the download url back to the user
+                res.json({
+                    done: true,
+                    url: data.Location,
+                });
+            }
+        );
+
         // Closes the browser tab
         await page.close();
-
-        // Sends the download url back to the user
-        res.json({ done: true, url: `http://localhost:${port}/` + out });
     });
 
     app.get('/exchange', async function (req, res) {
