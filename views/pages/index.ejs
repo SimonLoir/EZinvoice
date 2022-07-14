@@ -30,7 +30,9 @@
                                 <span><%= c_name %></span><br />
                                 <% } %>
                                 <span><%- c_addr %></span><br />
+                                <% if(c_vat_number) { %>
                                 <p>TVA : <%= c_vat_number %></p>
+                                <% } %>
                             </div>
                         </div>
 
@@ -151,7 +153,7 @@
             </div>
             <div id="invoice-header-info">
                 <h3><%= title %></h3>
-                <span>Numéro de document : <%= i_nbr %></span><br />
+                <span>Numéro de facture : <%= i_nbr %></span><br />
                 <span>Date d'émission : <%= i_date %></span><br />
                 <span>Échéance : <%= i_end_date %></span>
             </div>

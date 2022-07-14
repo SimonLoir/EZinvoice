@@ -30,14 +30,6 @@ async function run() {
 
     if (!fs.existsSync(tmp)) fs.mkdirSync(tmp);
 
-    const endpoint = new aws.Endpoint(process.env.SPACE_URL);
-
-    const s3 = new aws.S3({
-        endpoint,
-        accessKeyId: process.env.SPACE_UID,
-        secretAccessKey: process.env.SPACE_KEY,
-    });
-
     // Creates the output folder
     if (!fs.existsSync('out')) fs.mkdirSync('out');
 
@@ -140,12 +132,17 @@ async function run() {
 
         // Converts the HTML to PDF
         await page.pdf({
-            path: tmp + out,
+            path: 'out/out.pdf',
             preferCSSPageSize: true,
             printBackground: true,
         });
 
-        const jwt_data = {
+        res.json({
+            done: true,
+            url: tmp + 'out',
+        });
+
+        /*const jwt_data = {
             a: req.body.i_nbr,
             d: new Date().toISOString(),
             u: v4(),
@@ -169,7 +166,7 @@ async function run() {
                     url: data.Location,
                 });
             }
-        );
+        );*/
 
         // Closes the browser tab
         await page.close();
