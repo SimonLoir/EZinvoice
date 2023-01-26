@@ -10,7 +10,8 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "pm2 start dist/app.js --watch",
         "stop": "pm2 stop app",
-        "logs": "pm2 logs"
+        "logs": "pm2 logs",
+        "typescript": "tsc"
     },
     "repository": {
         "type": "git",

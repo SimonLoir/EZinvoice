@@ -78,6 +78,19 @@
                                     </td>
                                 </tr>
 
+
+                                <tr>
+                                    <td colspan="4" class="hidden"></td>
+                                    <td><b>Total TVA</b></td>
+                                    <td style="text-align: right">
+                                        <%= data.map(function (e) { return e[1]
+                                        * ((e[4] ? 0 : e[3] * e[2] /
+                                        100)); }).reduce((accumulator,
+                                        currentValue) => accumulator +
+                                        currentValue).toFixed(2) %>€
+                                    </td>
+                                </tr>
+
                                 <tr>
                                     <td colspan="4" class="hidden"></td>
                                     <td><b>Total TTC</b></td>
